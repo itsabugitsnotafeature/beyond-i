@@ -1,13 +1,22 @@
+/**
+ * PathRevealScreen.tsx -- Phase 3 (BLOOM): AI-generated path reveal.
+ * Receives quiz answers, calls the OpenAI service, and streams the personalized
+ * Beyond I Path to the user in real time. Acts as the bridge between the quiz
+ * and the home screen.
+ */
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../App';
+import { useNavigateWithTransition } from '../hooks/useNavigateWithTransition';
 
 type Props = {
   navigation: NativeStackNavigationProp<RootStackParamList, 'PathReveal'>;
 };
 
 export function PathRevealScreen({ navigation }: Props) {
+  const go = useNavigateWithTransition(navigation);
+
   return (
     <View style={styles.container}>
       <Text style={styles.label}>PHASE 3 — BLOOM</Text>
@@ -15,7 +24,7 @@ export function PathRevealScreen({ navigation }: Props) {
       <Text style={styles.subtitle}>
         AI-generated personalized path will stream here.
       </Text>
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Home')}>
+      <TouchableOpacity style={styles.button} onPress={() => go('Home')}>
         <Text style={styles.buttonText}>See your path →</Text>
       </TouchableOpacity>
     </View>

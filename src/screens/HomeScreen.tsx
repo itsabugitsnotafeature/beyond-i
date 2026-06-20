@@ -1,13 +1,22 @@
+/**
+ * HomeScreen.tsx -- Phase 4 (LIGHT): The user's personal Beyond I dashboard.
+ * Displays the AI-generated path as a set of recommendation cards. Each card
+ * shows what a modality is, why it fits this user, and how to get started.
+ * This is the screen users return to as their anchor point in the app.
+ */
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../App';
+import { useNavigateWithTransition } from '../hooks/useNavigateWithTransition';
 
 type Props = {
   navigation: NativeStackNavigationProp<RootStackParamList, 'Home'>;
 };
 
 export function HomeScreen({ navigation }: Props) {
+  const go = useNavigateWithTransition(navigation);
+
   return (
     <View style={styles.container}>
       <Text style={styles.label}>PHASE 4 — LIGHT</Text>
@@ -15,7 +24,7 @@ export function HomeScreen({ navigation }: Props) {
       <Text style={styles.subtitle}>
         Recommendation cards will live here.
       </Text>
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Guide')}>
+      <TouchableOpacity style={styles.button} onPress={() => go('Guide')}>
         <Text style={styles.buttonText}>Talk to your Guide →</Text>
       </TouchableOpacity>
     </View>

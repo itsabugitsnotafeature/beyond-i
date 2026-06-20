@@ -1,3 +1,12 @@
+/**
+ * TodoItem.tsx -- Boilerplate component retained as a structural reference.
+ *
+ * TODO: This file demonstrates the shared component pattern used in Beyond I.
+ * It will be replaced by purpose-built components as each phase is built:
+ *   - QuizOption: a single selectable answer card in the onboarding quiz
+ *   - RecommendationCard: displays one AI-generated path item on the home screen
+ *   - ChatBubble: a single message in the Inner Guide conversation
+ */
 import React, { useState } from 'react';
 import {
   View,

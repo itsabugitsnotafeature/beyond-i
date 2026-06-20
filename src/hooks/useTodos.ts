@@ -1,3 +1,12 @@
+/**
+ * useTodos.ts -- Boilerplate hook retained as a structural reference.
+ *
+ * TODO: This file demonstrates the custom hook pattern used throughout Beyond I.
+ * It will be replaced or joined by domain-specific hooks as each phase is built:
+ *   - useQuiz: manages quiz state, current question index, and collected answers
+ *   - usePath: fetches and stores the AI-generated Beyond I Path
+ *   - useGuide: manages the Inner Guide conversation history and streaming state
+ */
 import { useState } from 'react';
 import { Todo } from '../types';
 

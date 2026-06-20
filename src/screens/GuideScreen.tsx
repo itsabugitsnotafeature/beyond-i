@@ -1,3 +1,9 @@
+/**
+ * GuideScreen.tsx -- Phase 5 (GUIDE): The Inner Guide chat companion.
+ * A conversational AI available 24/7 for users who need support in the moment.
+ * Powered by OpenAI with a carefully crafted empathetic, non-judgmental persona.
+ * Designed for the "2am moment" -- when someone needs guidance and has nowhere else to turn.
+ */
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
