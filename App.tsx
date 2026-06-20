@@ -21,7 +21,7 @@ import { TransitionOverlay } from './src/components/TransitionOverlay';
 export type RootStackParamList = {
   Welcome: undefined;
   Quiz: undefined;
-  PathReveal: undefined;
+  PathReveal: { answers: import('./src/types').QuizAnswer[] };
   Home: undefined;
   Guide: undefined;
 };

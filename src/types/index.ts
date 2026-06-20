@@ -40,3 +40,15 @@ export interface QuizState {
   answers: QuizAnswer[];
   isComplete: boolean;
 }
+
+export interface PathItem {
+  name: string;
+  category: string;
+  why: string;
+  howToStart: string;
+}
+
+export interface BeyondIPath {
+  summary: string;
+  path: PathItem[];
+}

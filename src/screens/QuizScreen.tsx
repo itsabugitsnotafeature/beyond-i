@@ -26,7 +26,7 @@ type Props = {
 
 export function QuizScreen({ navigation }: Props) {
   const go = useNavigateWithTransition(navigation);
-  const { currentQuestion, currentIndex, currentAnswer, total, isComplete, selectAnswer, goNext, goBack } = useQuiz();
+  const { currentQuestion, currentIndex, currentAnswer, total, answers, isComplete, selectAnswer, goNext, goBack } = useQuiz();
 
   const fadeAnim = useRef(new Animated.Value(1)).current;
 
@@ -41,7 +41,7 @@ export function QuizScreen({ navigation }: Props) {
   const handleNext = () => {
     if (!currentAnswer) return;
     if (isComplete || currentIndex === total - 1) {
-      go('PathReveal');
+      go('PathReveal', { answers });
       return;
     }
     animateTransition(goNext);
