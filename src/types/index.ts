@@ -17,3 +17,26 @@ export interface Todo {
   text: string;
   completed: boolean;
 }
+
+export interface QuizOption {
+  id: string;
+  text: string;
+}
+
+export interface QuizQuestion {
+  id: string;
+  question: string;
+  options: QuizOption[];
+}
+
+export interface QuizAnswer {
+  questionId: string;
+  optionId: string;
+  optionText: string;
+}
+
+export interface QuizState {
+  currentIndex: number;
+  answers: QuizAnswer[];
+  isComplete: boolean;
+}

@@ -1,15 +1,24 @@
 /**
  * QuizScreen.tsx -- Phase 2 (ROOTS): The onboarding quiz.
- * Presents 7 thoughtful questions one screen at a time to understand the user's
- * belief system, emotional state, and preferences. Answers are passed to the
- * AI path generation step on completion.
+ * Presents 7 thoughtful questions one at a time. Answers are collected by
+ * useQuiz and passed to OpenAI in Phase 3 to generate a personalized path.
  */
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Animated,
+  ScrollView,
+  Platform,
+} from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../App';
 import { useNavigateWithTransition } from '../hooks/useNavigateWithTransition';
+import { useQuiz } from '../hooks/useQuiz';
 import { CircularProgress } from '../components/CircularProgress';
+import { QuizOption } from '../components/QuizOption';
 
 type Props = {
   navigation: NativeStackNavigationProp<RootStackParamList, 'Quiz'>;
@@ -17,17 +26,85 @@ type Props = {
 
 export function QuizScreen({ navigation }: Props) {
   const go = useNavigateWithTransition(navigation);
+  const { currentQuestion, currentIndex, currentAnswer, total, isComplete, selectAnswer, goNext, goBack } = useQuiz();
+
+  const fadeAnim = useRef(new Animated.Value(1)).current;
+
+  const animateTransition = (callback: () => void) => {
+    Animated.sequence([
+      Animated.timing(fadeAnim, { toValue: 0, duration: 150, useNativeDriver: true }),
+      Animated.timing(fadeAnim, { toValue: 1, duration: 200, useNativeDriver: true }),
+    ]).start();
+    setTimeout(callback, 150);
+  };
+
+  const handleNext = () => {
+    if (!currentAnswer) return;
+    if (isComplete || currentIndex === total - 1) {
+      go('PathReveal');
+      return;
+    }
+    animateTransition(goNext);
+  };
+
+  const handleBack = () => {
+    if (currentIndex === 0) return;
+    animateTransition(goBack);
+  };
+
+  const isLast = currentIndex === total - 1;
+  const canProceed = !!currentAnswer;
 
   return (
     <View style={styles.container}>
-      {/* Phase 2 will replace current/total with live state from useQuiz */}
-      <CircularProgress current={1} total={7} size={80} />
-      <Text style={styles.label}>PHASE 2 — ROOTS</Text>
-      <Text style={styles.title}>Quiz</Text>
-      <Text style={styles.subtitle}>The onboarding quiz will live here.</Text>
-      <TouchableOpacity style={styles.button} onPress={() => go('PathReveal')}>
-        <Text style={styles.buttonText}>Continue →</Text>
-      </TouchableOpacity>
+      <View style={styles.webCard}>
+      {/* Header */}
+      <View style={styles.header}>
+        {currentIndex > 0 ? (
+          <TouchableOpacity onPress={handleBack} style={styles.backButton}>
+            <Text style={styles.backText}>← Back</Text>
+          </TouchableOpacity>
+        ) : (
+          <View style={styles.backPlaceholder} />
+        )}
+        <CircularProgress current={currentIndex + 1} total={total} size={56} strokeWidth={3} />
+        <View style={styles.backPlaceholder} />
+      </View>
+
+      <ScrollView contentContainerStyle={styles.body} showsVerticalScrollIndicator={false}>
+        {/* Question */}
+        <Animated.View style={{ opacity: fadeAnim }}>
+          <Text style={styles.stepLabel}>Question {currentIndex + 1} of {total}</Text>
+          <Text style={styles.question}>{currentQuestion.question}</Text>
+
+          {/* Options */}
+          <View style={styles.options}>
+            {currentQuestion.options.map(option => (
+              <QuizOption
+                key={option.id}
+                text={option.text}
+                selected={currentAnswer?.optionId === option.id}
+                onPress={() => selectAnswer(option.id, option.text)}
+              />
+            ))}
+          </View>
+        </Animated.View>
+      </ScrollView>
+
+      {/* Footer */}
+      <View style={styles.footer}>
+        <TouchableOpacity
+          style={[styles.nextButton, !canProceed && styles.nextButtonDisabled]}
+          onPress={handleNext}
+          disabled={!canProceed}
+          activeOpacity={0.8}
+        >
+          <Text style={styles.nextButtonText}>
+            {isLast ? 'See my path →' : 'Next →'}
+          </Text>
+        </TouchableOpacity>
+      </View>
+      </View>
     </View>
   );
 }
@@ -36,36 +113,71 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#1A1A2E',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 32,
+    alignItems: Platform.OS === 'web' ? 'center' : 'stretch',
+    justifyContent: Platform.OS === 'web' ? 'center' : 'flex-start',
   },
-  label: {
+  webCard: {
+    flex: 1,
+    width: '100%',
+    maxWidth: Platform.OS === 'web' ? 560 : undefined,
+    alignSelf: Platform.OS === 'web' ? 'center' : 'stretch',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 24,
+    paddingTop: 64,
+    paddingBottom: 16,
+  },
+  backButton: {
+    width: 80,
+  },
+  backText: {
+    color: 'rgba(255,255,255,0.5)',
+    fontSize: 15,
+  },
+  backPlaceholder: {
+    width: 80,
+  },
+  body: {
+    paddingHorizontal: 24,
+    paddingTop: 24,
+    paddingBottom: 32,
+  },
+  stepLabel: {
     fontSize: 11,
     color: '#7C6AF7',
     letterSpacing: 2,
-    marginTop: 24,
-    marginBottom: 12,
-  },
-  title: {
-    fontSize: 36,
-    fontWeight: '800',
-    color: '#FFFFFF',
-    marginBottom: 12,
-  },
-  subtitle: {
-    fontSize: 15,
-    color: 'rgba(255,255,255,0.5)',
+    marginBottom: 16,
     textAlign: 'center',
-    marginBottom: 60,
   },
-  button: {
+  question: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    textAlign: 'center',
+    lineHeight: 34,
+    marginBottom: 36,
+  },
+  options: {
+    width: '100%',
+  },
+  footer: {
+    paddingHorizontal: 24,
+    paddingBottom: 48,
+    paddingTop: 12,
+  },
+  nextButton: {
     backgroundColor: '#7C6AF7',
-    paddingHorizontal: 40,
-    paddingVertical: 14,
+    paddingVertical: 16,
     borderRadius: 30,
+    alignItems: 'center',
   },
-  buttonText: {
+  nextButtonDisabled: {
+    backgroundColor: 'rgba(124,106,247,0.3)',
+  },
+  nextButtonText: {
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '600',
