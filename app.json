@@ -1,23 +1,23 @@
 {
   "expo": {
-    "name": "HelloFullStack",
-    "slug": "project-yatagarasu",
+    "name": "Beyond I",
+    "slug": "beyond-i",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash-icon.png",
-      "backgroundColor": "#FF6B35"
+      "backgroundColor": "#1A1A2E"
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.projectyatagarasu.hellofullstack"
+      "bundleIdentifier": "com.beyondi.app"
     },
     "android": {
-      "package": "com.projectyatagarasu.hellofullstack",
+      "package": "com.beyondi.app",
       "adaptiveIcon": {
-        "backgroundColor": "#FF6B35",
+        "backgroundColor": "#1A1A2E",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
@@ -27,11 +27,6 @@
     "web": {
       "favicon": "./assets/favicon.png",
       "bundler": "metro"
-    },
-    "extra": {
-      "eas": {
-        "projectId": "94cd20fa-2c44-47f3-a558-3def7f3d0b47"
-      }
     }
   }
 }
